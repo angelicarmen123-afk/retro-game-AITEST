@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hello World — Dance Party 🎉</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      min-height: 100vh;
+      background: linear-gradient(135deg, #1a1a2e, #16213e);
+      overflow: hidden;
+      font-family: system-ui, sans-serif;
+      position: relative;
+    }
+
+    /* Hello World */
+    .hello-text {
+      position: absolute;
+      top: 10%;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 3rem;
+      font-weight: bold;
+      color: #fff;
+      text-shadow: 0 0 20px #f97316, 0 0 40px #ec4899;
+      z-index: 10;
+      animation: glow 2s ease-in-out infinite alternate;
+    }
+    @keyframes glow {
+      from { text-shadow: 0 0 20px #f97316, 0 0 40px #ec4899; }
+      to { text-shadow: 0 0 30px #10b981, 0 0 60px #3b82f6; }
+    }
+
+    /* Button */
+    .party-btn {
+      position: fixed;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 1rem 2.5rem;
+      font-size: 1.2rem;
+      font-weight: bold;
+      border: none;
+      border-radius: 50px;
+      background: linear-gradient(135deg, #f97316, #ec4899);
+      color: white;
+      cursor: pointer;
+      box-shadow: 0 0 30px rgba(236,72,153,0.4);
+      z-index: 100;
+      transition: transform 0.2s;
+    }
+    .party-btn:hover {
+      transform: translateX(-50%) scale(1.08);
+    }
+
+    /* Shapes */
+    .shape {
+      position: absolute;
+      opacity: 0;
+      animation: floatIn 3s ease forwards, pulse 2s ease-in-out infinite alternate;
+    }
+    @keyframes floatIn {
+      0% {
+        opacity: 0;
+        transform: translateY(100vh) rotate(0deg) scale(0.3);
+      }
+      100% {
+        opacity: 0.9;
+        transform: translateY(0) rotate(360deg) scale(1);
+      }
+    }
+    @keyframes pulse {
+      from { filter: brightness(1); }
+      to { filter: brightness(1.4); }
+    }
+
+    /* Dancing People */
+    .dancer {
+      position: absolute;
+      font-size: 3rem;
+      opacity: 0;
+      animation: danceIn 4s ease forwards, dance 0.5s ease-in-out infinite alternate;
+    }
+    @keyframes danceIn {
+      0% {
+        opacity: 0;
+        transform: translateY(100vh) scale(0.5);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+    @keyframes dance {
+      0% { transform: translateY(0) rotate(-5deg) scale(1); }
+      100% { transform: translateY(-15px) rotate(5deg) scale(1.05); }
+    }
+
+    /* Colour change for background */
+    body.party-mode {
+      animation: bgShift 8s ease infinite;
+    }
+    @keyframes bgShift {
+      0% { background: linear-gradient(135deg, #1a1a2e, #16213e); }
+      25% { background: linear-gradient(135deg, #3b0764, #4c1d95); }
+      50% { background: linear-gradient(135deg, #831843, #be185d); }
+      75% { background: linear-gradient(135deg, #164e63, #0891b2); }
+      100% { background: linear-gradient(135deg, #1a1a2e, #16213e); }
+    }
+  </style>
+</head>
+<body>
+
+  <h1 class="hello-text">Hello World 🎊</h1>
+
+  <button class="party-btn" id="startBtn">🎉 Start the Party!</button>
+
+  <script>
+    const startBtn = document.getElementById('startBtn');
+    const body = document.body;
+    let partyOn = false;
+
+    // Shape types & colours
+    const shapeTypes = ['●', '■', '▲', '◆', '★', '♦', '♠', '♥'];
+    const colours = ['#f97316', '#ec4899', '#10b981', '#3b82f6', '#facc15', '#a855f7', '#06b6d4', '#f43f5e'];
+    const dancers = ['💃', '🕺', '👯', '💃', '🕺', '👯‍♀️', '🎉', '🎊', '🕺', '💃'];
+
+    // Create floating shapes
+    function createShapes() {
+      for (let i = 0; i < 25; i++) {
+        setTimeout(() => {
+          const shape = document.createElement('div');
+          shape.className = 'shape';
+          shape.textContent = shapeTypes[Math.floor(Math.random() * shapeTypes.length)];
+          shape.style.left = `${Math.random() * 90 + 5}%`;
+          shape.style.top = `${Math.random() * 70 + 15}%`;
+          shape.style.fontSize = `${Math.random() * 40 + 25}px`;
+          shape.style.color = colours[Math.floor(Math.random() * colours.length)];
+          shape.style.animationDelay = `${Math.random() * 2}s`;
+          document.body.appendChild(shape);
+        }, i * 150);
+      }
+    }
+
+    // Create dancing people
+    function createDancers() {
+      for (let i = 0; i < 10; i++) {
+        setTimeout(() => {
+          const dancer = document.createElement('div');
+          dancer.className = 'dancer';
+          dancer.textContent = dancers[i];
+          dancer.style.left = `${10 + i * 9}%`;
+          dancer.style.bottom = '10%';
+          dancer.style.animationDelay = `${i * 0.3}s`;
+          document.body.appendChild(dancer);
+        }, i * 400);
+      }
+    }
+
+    // Start Party
+    startBtn.addEventListener('click', () => {
+      if (!partyOn) {
+        partyOn = true;
+        body.classList.add('party-mode');
+        createShapes();
+        createDancers();
+        startBtn.textContent = '✨ Party Started!';
+        startBtn.style.background = 'linear-gradient(135deg, #10b981, #3b82f6)';
+      }
+    });
+  </script>
+</body>
+</html>
